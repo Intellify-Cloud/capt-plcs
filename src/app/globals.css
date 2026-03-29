@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Libre+Franklin:wght@300;400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Libre Baskerville", serif;
+  --font-sans: "Libre Franklin", sans-serif;
+}
+
+:root {
+  --background: #f3f0eb;
+  --foreground: #545454;
+  --primary: #000000;
+  --primary-foreground: #F1EDE7;
+  --secondary: #e5e0d8;
+  --secondary-foreground: #545454;
+  --accent: #131516;
+  --accent-foreground: #F1EDE7;
+  --muted: #e5e0d8;
+  --muted-foreground: #a19a91;
+  --border: #dcd6cd;
+  --card: #F1EDE7;
+  --card-foreground: #545454;
+  --popover: #F1EDE7;
+  --popover-foreground: #545454;
+  --radius: 0rem; /* Minimalist design often uses sharp corners */
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    @apply antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    color: #131516;
+    @apply tracking-tight;
+  }
+}
+
+@layer utilities {
+  .tracking-widest-plus {
+    letter-spacing: 0.25em;
+  }
+  .underline-thin {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+  }
+}
