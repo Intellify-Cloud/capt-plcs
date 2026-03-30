@@ -24,7 +24,9 @@ export async function POST(req: NextRequest) {
   });
 
   if (!res.ok) {
-    return NextResponse.json({ error: "Failed to send message." }, { status: res.status });
+    const detail = await res.text();
+    console.error("Broadsheet API error:", res.status, detail);
+    return NextResponse.json({ error: "Failed to send message.", detail }, { status: res.status });
   }
 
   return NextResponse.json({ ok: true });
