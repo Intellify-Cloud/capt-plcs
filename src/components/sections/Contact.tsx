@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { site } from "@/data/site";
+import { broadsheetApi } from "@/lib/api";
 
 export default function Contact() {
   if (!site.contact.show) return null;
@@ -19,21 +20,18 @@ export default function Contact() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("sending");
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+      await broadsheetApi.post("/v1/messages", {
+        name: form.fullName,
+        emailAddress: form.email,
+        phoneNumber: form.phone,
+        content: form.message,
       });
-      if (res.ok) {
-        setStatus("sent");
-        setForm({ fullName: "", phone: "", email: "", message: "" });
-      } else {
-        setStatus("error");
-      }
+      setStatus("sent");
+      setForm({ fullName: "", phone: "", email: "", message: "" });
     } catch {
       setStatus("error");
     }
