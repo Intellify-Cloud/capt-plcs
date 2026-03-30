@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { site } from "@/data/site";
 
 export async function POST(req: NextRequest) {
   const { fullName, phone, email, message } = await req.json();
@@ -8,19 +7,25 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
   }
 
-  // Forward as a mailto link — replace this block with Resend / Nodemailer / SendGrid when ready
-  const body = [
-    `Name: ${fullName}`,
-    `Phone: ${phone || "—"}`,
-    `Email: ${email}`,
-    `\nMessage:\n${message}`,
-  ].join("\n");
+  const apiUrl = process.env.NEXT_PUBLIC_BROADSHEET_API_URL;
+  if (!apiUrl) {
+    return NextResponse.json({ error: "API not configured." }, { status: 500 });
+  }
 
-  // Log to console in dev; swap for an email-sending service in production
-  console.log("📬 Contact form submission:\n", body);
+  const res = await fetch(`${apiUrl.replace(/\/$/, "")}/v1/messages`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: fullName,
+      emailAddress: email,
+      phoneNumber: phone || "",
+      content: message,
+    }),
+  });
 
-  // TODO: send to site.contact.email using your preferred email service
-  // e.g. Resend: await resend.emails.send({ from: "...", to: site.contact.email, ... })
+  if (!res.ok) {
+    return NextResponse.json({ error: "Failed to send message." }, { status: res.status });
+  }
 
   return NextResponse.json({ ok: true });
 }
