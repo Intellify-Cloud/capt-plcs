@@ -12,9 +12,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "API not configured." }, { status: 500 });
   }
 
+  const origin = req.headers.get("origin") ?? req.headers.get("referer") ?? "";
+
   const res = await fetch(`${apiUrl.replace(/\/$/, "")}/v1/messages`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "Origin": origin,
+    },
     body: JSON.stringify({
       name: fullName,
       emailAddress: email,
